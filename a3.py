@@ -61,7 +61,8 @@ class Polygon(Shape):
         '''
         Initializations here
         '''
-        pass
+        self.poly = A
+        self.old_poly = []
  
     
     def translate(self, dx, dy):
@@ -72,10 +73,21 @@ class Polygon(Shape):
     
         This function returns the final coordinates
         '''
-        pass
+        self.old_poly = self.poly
+        self.poly = []
+        Shape.translate(self, dx, dy)
+        for i in range(0, len(self.old_poly)):
+            mat = np.array([self.old_poly[i][0], self.old_poly[i][1], 1])
+            ans = np.dot(mat, self.T_t)
+            self.poly.append([ans[0], ans[1]])
+
+
+        return self.poly
+
+
 
     
-    def scale(self, sx, sy):
+    def scale(self, sx, sy ):
         '''
         Function to scale the polygon
     
@@ -83,7 +95,15 @@ class Polygon(Shape):
     
         This function returns the final coordinates
         '''
-        pass
+        self.old_poly = self.poly
+        self.poly = []
+        Shape.scale(self, sx, sy)
+        for i in range(0, len(self.old_poly)):
+            mat = np.array([self.old_poly[i][0], self.old_poly[i][1], 1])
+            ans = np.dot(mat, self.T_s)
+            self.poly.append([ans[0], ans[1]])
+
+        return self.poly
  
     
     def rotate(self, deg, rx = 0, ry = 0):
@@ -94,8 +114,20 @@ class Polygon(Shape):
     
         This function returns the final coordinates
         '''
-        pass
-    
+        self.old_poly = self.poly
+        t = [rx, ry]*len(self.poly)
+        t = np.array(t)
+        self.poly = np.array(self.poly)
+        ar = self.poly - t
+
+        self.poly = []
+        Shape.scale(self, deg)
+        for i in range(0, len(self.old_poly)):
+            mat = np.array([ar[i][0], ar[i][1], 1])
+            ans = np.dot(mat, self.T_r)
+            self.poly.append([ans[0], ans[1]])
+
+        return self.poly
 
     def plot(self):
         '''
@@ -109,7 +141,14 @@ class Polygon(Shape):
     
         This function does not return anything
         '''
-        pass
+        figure, axes = plt.subplots()
+        axes.set_aspect(1)
+
+        axes.add_artist(plt.Circle((self.x, self.y), self.radius, color='pink'))
+
+        axes.add_artist(plt.Circle((self.x_old, self.y_old), self.rad_old, linestyle='--', fill=False))
+
+        Shape.plot(self, (self.x + self.radius), (self.x + self.radius))
 
 
 class Circle(Shape):
@@ -157,11 +196,9 @@ class Circle(Shape):
         self.rad_old = self.radius
         Shape.scale(self, sx, sx)
         mat = np.array([self.radius, 0, 0])
-        ans = np.dot(self.T_s, mat)
+        ans = np.dot(mat, self.T_s)
         return self.x, self.y, ans[0]
 
-
- 
     
     def rotate(self, deg, rx = 0, ry = 0):
         '''
@@ -176,7 +213,7 @@ class Circle(Shape):
         self.rad_old = self.radius
         Shape.rotate(self, deg)
         mat = np.array([self.x - rx, self.y - ry, 1])
-        ans = np.dot(self.T_r, mat)
+        ans = np.dot(mat, self.T_r)
         return ans[0], ans[1], self.radius
     
     def plot(self):
@@ -199,36 +236,45 @@ class Circle(Shape):
 
         axes.add_artist(plt.Circle((self.x_old, self.y_old), self.rad_old, linestyle='--', fill=False))
 
-        Shape.plot(self, (self.x + self.radius), (self.x + self.radius))
+        Shape.plot(self, (self.x + self.radius)*2, (self.x + self.radius)*2)
 
 if __name__ == "__main__":
     '''
     Add menu here as mentioned in the sample output section of the assignment document.
     '''
-    print("welcome!")
+    ''' print("welcome!")
     while True:
         a1 = input("enter 1 if you want to see the plot after transformation otherwise enter 0")
-        if a1!= '1' or a1 != '0':
+        if a1 != '1' or a1 != '0':
             print("please enter correct choice")
         else:
             a1 = int(a1)
             break
     while True:
         a2 = input("enter 1 if you want to generate a circle, enter 0 to generate a polygon")
-        if a2!= '1' or a2 != '0':
+        if a2 != '1' or a2 != '0':
             print("please enter correct choice")
         else:
             a2 = int(a2)
             break
 
+    if a2 == 0:
+        co_ord = []
+        n = int(input("enter the number of sides of polygon"))
+        for i in range(0, n):
+            x = input("enter space separated co-ordinates x"+ str(i) + " y" + str(i)).split()
+            li = [x[0], x[1]]
+            co_ord.append(li)
+            Polygon(co_ord)
 
 
 
     print("choose the shape you would like to generate")
     print("")
+    '''
     c = Circle(1,1,3)
     print(c.radius)
-    (c.x, c.y, c.radius) = c.rotate(30, 5, 5)
+    (c.x, c.y, c.radius) = c.rotate(45,0,0)
     print(c.radius)
 
     c.plot()
