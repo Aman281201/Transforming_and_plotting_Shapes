@@ -205,9 +205,30 @@ if __name__ == "__main__":
     '''
     Add menu here as mentioned in the sample output section of the assignment document.
     '''
+    print("welcome!")
+    while True:
+        a1 = input("enter 1 if you want to see the plot after transformation otherwise enter 0")
+        if a1!= '1' or a1 != '0':
+            print("please enter correct choice")
+        else:
+            a1 = int(a1)
+            break
+    while True:
+        a2 = input("enter 1 if you want to generate a circle, enter 0 to generate a polygon")
+        if a2!= '1' or a2 != '0':
+            print("please enter correct choice")
+        else:
+            a2 = int(a2)
+            break
+
+
+
+
+    print("choose the shape you would like to generate")
+    print("")
     c = Circle(1,1,3)
     print(c.radius)
-    (c.x, c.y, c.radius) = c.scale(2)
+    (c.x, c.y, c.radius) = c.rotate(30, 5, 5)
     print(c.radius)
 
     c.plot()
