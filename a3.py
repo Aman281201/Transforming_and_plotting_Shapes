@@ -178,7 +178,10 @@ class Circle(Shape):
         self.rad_old = self.radius
         mat = np.array([self.x, self.y, 1])
         Shape.translate(self, dx, dy)
-        ans = np.dot(mat,self.T_t)
+        ans = np.dot(self.T_t, mat)
+        self.x = ans[0]
+        self.y = ans[1]
+
         return ans[0], ans[1], self.radius
         
     def scale(self, sx = 1):
@@ -195,6 +198,8 @@ class Circle(Shape):
         Shape.scale(self, sx, sx)
         mat = np.array([self.radius, 0, 0])
         ans = np.dot(mat, self.T_s)
+        self.radius = ans[0]
+
         return self.x, self.y, ans[0]
 
     
@@ -212,6 +217,9 @@ class Circle(Shape):
         Shape.rotate(self, deg)
         mat = np.array([self.x - rx, self.y - ry, 1])
         ans = np.dot(mat, self.T_r)
+        self.x = ans[0]
+        self.y = ans[1]
+
         return ans[0], ans[1], self.radius
     
     def plot(self):
@@ -305,9 +313,9 @@ if __name__ == "__main__":
     print("choose the shape you would like to generate")
     print("")
 
-''' c = Circle(1,1,3)
+    ''' c = Circle(2,3,1)
     print(c.radius)
-    (c.x, c.y, c.radius) = c.rotate(45,0,0)
+    c.translate(2,3)
     print(c.radius)
 
     c.plot()'''
