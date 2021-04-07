@@ -77,10 +77,9 @@ class Polygon(Shape):
         self.poly = []
         Shape.translate(self, dx, dy)
         for i in range(0, len(self.old_poly)):
-            mat = np.array([self.old_poly[i][0], self.old_poly[i][1], 1])
+            mat = np.array(self.poly[i])
             ans = np.dot(mat, self.T_t)
-            self.poly.append([ans[0], ans[1]])
-
+            self.poly.append(ans)
 
         return self.poly
 
@@ -99,13 +98,12 @@ class Polygon(Shape):
         self.poly = []
         Shape.scale(self, sx, sy)
         for i in range(0, len(self.old_poly)):
-            mat = np.array([self.old_poly[i][0], self.old_poly[i][1], 1])
+            mat = np.array(self.old_poly[i])
             ans = np.dot(mat, self.T_s)
-            self.poly.append([ans[0], ans[1]])
+            self.poly.append(ans)
 
         return self.poly
- 
-    
+
     def rotate(self, deg, rx = 0, ry = 0):
         '''
         Function to rotate the polygon
@@ -115,7 +113,7 @@ class Polygon(Shape):
         This function returns the final coordinates
         '''
         self.old_poly = self.poly
-        t = [rx, ry]*len(self.poly)
+        t = [rx, ry, 0]*len(self.poly)
         t = np.array(t)
         self.poly = np.array(self.poly)
         ar = self.poly - t
@@ -123,9 +121,9 @@ class Polygon(Shape):
         self.poly = []
         Shape.scale(self, deg)
         for i in range(0, len(self.old_poly)):
-            mat = np.array([ar[i][0], ar[i][1], 1])
+            mat = np.array(ar[i])
             ans = np.dot(mat, self.T_r)
-            self.poly.append([ans[0], ans[1]])
+            self.poly.append(ans)
 
         return self.poly
 
@@ -180,7 +178,7 @@ class Circle(Shape):
         self.rad_old = self.radius
         mat = np.array([self.x, self.y, 1])
         Shape.translate(self, dx, dy)
-        ans = np.dot(self.T_t, mat)
+        ans = np.dot(mat,self.T_t)
         return ans[0], ans[1], self.radius
         
     def scale(self, sx = 1):
@@ -242,39 +240,74 @@ if __name__ == "__main__":
     '''
     Add menu here as mentioned in the sample output section of the assignment document.
     '''
-    ''' print("welcome!")
+    print("welcome!")
     while True:
         a1 = input("enter 1 if you want to see the plot after transformation otherwise enter 0")
-        if a1 != '1' or a1 != '0':
+        if a1 != '1' and a1 != '0':
             print("please enter correct choice")
         else:
             a1 = int(a1)
             break
+
     while True:
-        a2 = input("enter 1 if you want to generate a circle, enter 0 to generate a polygon")
-        if a2 != '1' or a2 != '0':
-            print("please enter correct choice")
-        else:
-            a2 = int(a2)
+        t = int(input("Number of test cases"))
+        if t >= 0:
             break
 
-    if a2 == 0:
-        co_ord = []
-        n = int(input("enter the number of sides of polygon"))
-        for i in range(0, n):
-            x = input("enter space separated co-ordinates x"+ str(i) + " y" + str(i)).split()
-            li = [x[0], x[1]]
-            co_ord.append(li)
-            Polygon(co_ord)
+    for i in range(0, t):
+
+        while True:
+            a2 = input("enter 1 if you want to generate a circle, enter 0 to generate a polygon")
+            if a2 != '1' and a2 != '0':
+                print("please enter correct choice")
+            else:
+                a2 = int(a2)
+                break
+
+        if a2 == 0:
+            co_ord = []
+            n = int(input("enter the number of sides of polygon"))
+            for i in range(0, n):
+                x = input("enter space separated co-ordinates x"+ str(i) + " y" + str(i)).split()
+                li = [x[0], x[1], 1]
+                co_ord.append(li)
+                pg = Polygon(co_ord)
+
+        elif a2 == 1:
+            x = input("enter space seprated x co-ordinate, y co-ordinate and radius of circle").split()
+            c = Circle(int(x[0]), int(x[1]), int(x[2]))
+
+            p = int(input("enter the number of queries"))
+            print("for translation - t <distance along x> <distance along y>")
+            print("for Scaling - s <scaling factor>")
+            print("for rotation - r <angle of rotation in deg> <x co-ord of rotation(optional)> <y co-ord of rotation(optional)>")
+
+            for j in range(0, p):
+                q = input("enter the query").split()
+
+                if q[0] == 't':
+                    c.translate(int(q[1]), int(q[2]))
+                    c.plot()
+
+                elif q[0] == 's':
+                    c.scale(int(q[1]))
+                    c.plot()
+
+                else:
+                    if len(q) == 2:
+                        c.rotate(int(q[1]), 0, 0)
+                    elif len(q) == 4:
+                        c.rotate(int(q[1]), int(q[2]), int(q[3]))
+                    c.plot()
 
 
 
     print("choose the shape you would like to generate")
     print("")
-    '''
-    c = Circle(1,1,3)
+
+''' c = Circle(1,1,3)
     print(c.radius)
     (c.x, c.y, c.radius) = c.rotate(45,0,0)
     print(c.radius)
 
-    c.plot()
+    c.plot()'''
