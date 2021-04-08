@@ -78,8 +78,11 @@ class Polygon(Shape):
         Shape.translate(self, dx, dy)
         for i in range(0, len(self.old_poly)):
             mat = np.array(self.poly[i])
-            ans = np.dot(mat, self.T_t)
+            ans = np.dot(self.T_t, mat)
             self.poly.append(ans)
+
+        for i in range(0, len(self.poly)):
+            self.poly[i] = round(self.poly[i], 2)
 
         return self.poly
 
@@ -101,6 +104,8 @@ class Polygon(Shape):
             mat = np.array(self.old_poly[i])
             ans = np.dot(mat, self.T_s)
             self.poly.append(ans)
+        for i in range(0, len(self.poly)):
+            self.poly[i] = round(self.poly[i], 2)
 
         return self.poly
 
@@ -113,19 +118,28 @@ class Polygon(Shape):
         This function returns the final coordinates
         '''
         self.old_poly = self.poly
-        t = [rx, ry, 0]*len(self.poly)
+        t = [[rx, ry, 0]]*len(self.poly)
         t = np.array(t)
         self.poly = np.array(self.poly)
         ar = self.poly - t
 
         self.poly = []
-        Shape.scale(self, deg)
+        Shape.rotate(self, deg)
         for i in range(0, len(self.old_poly)):
             mat = np.array(ar[i])
-            ans = np.dot(mat, self.T_r)
+            ans = np.dot(mat, self.T_r.transpose())
             self.poly.append(ans)
+        self.poly = np.array(self.poly)
+        self.poly = self.poly + t
+        for i in range(0, len(self.poly)):
+            self.poly[i][0] = round(self.poly[i][0], 2)
+        x_ar = []
+        y_ar = []
+        for i in range(0, len(self.poly)):
+            y_ar.append(self.poly[i][1])
+            x_ar.append(self.poly[i][0])
 
-        return self.poly
+        return x_ar, y_ar
 
     def plot(self):
         '''
@@ -157,12 +171,12 @@ class Circle(Shape):
         '''
         Initializations here
         '''
-        self.x = x
-        self.y = y
-        self.radius = radius
-        self.x_old = 0
-        self.y_old = 0
-        self.rad_old = 0
+        self.x = round(x,2)
+        self.y = round(y,2)
+        self.radius = round(radius,2)
+        self.x_old = 0.00
+        self.y_old = 0.00
+        self.rad_old = 0.00
 
     
     def translate(self, dx, dy):
@@ -179,10 +193,10 @@ class Circle(Shape):
         mat = np.array([self.x, self.y, 1])
         Shape.translate(self, dx, dy)
         ans = np.dot(self.T_t, mat)
-        self.x = ans[0]
-        self.y = ans[1]
-
-        return ans[0], ans[1], self.radius
+        self.x = round(ans[0],2)
+        self.y = round(ans[1],2)
+        print(ans)
+        return (self.x, self.y, self.radius)
         
     def scale(self, sx = 1):
         '''
@@ -198,9 +212,9 @@ class Circle(Shape):
         Shape.scale(self, sx, sx)
         mat = np.array([self.radius, 0, 0])
         ans = np.dot(mat, self.T_s)
-        self.radius = ans[0]
+        self.radius = round(ans[0], 2)
 
-        return self.x, self.y, ans[0]
+        return self.x, self.y, self.radius
 
     
     def rotate(self, deg, rx = 0, ry = 0):
@@ -217,10 +231,10 @@ class Circle(Shape):
         Shape.rotate(self, deg)
         mat = np.array([self.x - rx, self.y - ry, 1])
         ans = np.dot(mat, self.T_r)
-        self.x = ans[0]
-        self.y = ans[1]
-
-        return ans[0], ans[1], self.radius
+        self.x = round(ans[1], 2) + rx
+        self.y = round(ans[0], 2) + ry
+        print(self.x, self.y, self.radius)
+        return self.x, self.y, self.radius
     
     def plot(self):
         '''
@@ -242,13 +256,13 @@ class Circle(Shape):
 
         axes.add_artist(plt.Circle((self.x_old, self.y_old), self.rad_old, linestyle='--', fill=False))
 
-        Shape.plot(self, (self.x + self.radius)*2, (self.x + self.radius)*2)
+        Shape.plot(self, (abs(self.x) + self.radius)*2, (abs(self.x) + self.radius)*2)
 
 if __name__ == "__main__":
     '''
     Add menu here as mentioned in the sample output section of the assignment document.
     '''
-    print("welcome!")
+    '''    print("welcome!")
     while True:
         a1 = input("enter 1 if you want to see the plot after transformation otherwise enter 0")
         if a1 != '1' and a1 != '0':
@@ -277,13 +291,13 @@ if __name__ == "__main__":
             n = int(input("enter the number of sides of polygon"))
             for i in range(0, n):
                 x = input("enter space separated co-ordinates x"+ str(i) + " y" + str(i)).split()
-                li = [x[0], x[1], 1]
+                li = [round(float(x[0]),2), round(float(x[1]),2), 1]
                 co_ord.append(li)
                 pg = Polygon(co_ord)
 
         elif a2 == 1:
             x = input("enter space seprated x co-ordinate, y co-ordinate and radius of circle").split()
-            c = Circle(int(x[0]), int(x[1]), int(x[2]))
+            c = Circle(float(x[0]), float(x[1]), float(x[2]))
 
             p = int(input("enter the number of queries"))
             print("for translation - t <distance along x> <distance along y>")
@@ -303,19 +317,23 @@ if __name__ == "__main__":
 
                 else:
                     if len(q) == 2:
-                        c.rotate(int(q[1]), 0, 0)
+                        c.rotate(float(q[1]), 0, 0)
                     elif len(q) == 4:
-                        c.rotate(int(q[1]), int(q[2]), int(q[3]))
+                        c.rotate(float(q[1]), float(q[2]), float(q[3]))
                     c.plot()
 
 
 
     print("choose the shape you would like to generate")
     print("")
+    '''
 
-    ''' c = Circle(2,3,1)
+    c = Circle(2.0, 2.0, 3.0)
+    c.rotate(45)
     print(c.radius)
-    c.translate(2,3)
-    print(c.radius)
-
-    c.plot()'''
+    c.plot()
+    '''
+    l = [[1.0, 1.0, 1.0], [1.0, 5.0, 1.0], [5.0, 5.0, 1.0], [5.0, 1.0, 1.0]]
+    p = Polygon(l)
+    print(p.rotate(90))
+    '''
