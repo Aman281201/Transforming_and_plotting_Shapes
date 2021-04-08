@@ -77,14 +77,18 @@ class Polygon(Shape):
         self.poly = []
         Shape.translate(self, dx, dy)
         for i in range(0, len(self.old_poly)):
-            mat = np.array(self.poly[i])
+            mat = np.array(self.old_poly[i])
             ans = np.dot(self.T_t, mat)
             self.poly.append(ans)
 
+        y_ar = []
+        x_ar = []
         for i in range(0, len(self.poly)):
-            self.poly[i] = round(self.poly[i], 2)
-
-        return self.poly
+            self.poly[i][0] = round(self.poly[i][0], 2)
+            self.poly[i][1] = round(self.poly[i][1], 2)
+            y_ar.append(self.poly[i][1])
+            x_ar.append(self.poly[i][0])
+        return x_ar, y_ar
 
 
 
@@ -104,10 +108,14 @@ class Polygon(Shape):
             mat = np.array(self.old_poly[i])
             ans = np.dot(mat, self.T_s)
             self.poly.append(ans)
+        y_ar = []
+        x_ar = []
         for i in range(0, len(self.poly)):
-            self.poly[i] = round(self.poly[i], 2)
-
-        return self.poly
+            self.poly[i][0] = round(self.poly[i][0], 2)
+            self.poly[i][1] = round(self.poly[i][1], 2)
+            y_ar.append(self.poly[i][1])
+            x_ar.append(self.poly[i][0])
+        return x_ar, y_ar
 
     def rotate(self, deg, rx = 0, ry = 0):
         '''
@@ -133,6 +141,7 @@ class Polygon(Shape):
         self.poly = self.poly + t
         for i in range(0, len(self.poly)):
             self.poly[i][0] = round(self.poly[i][0], 2)
+            self.poly[i][1] = round(self.poly[i][1], 2)
         x_ar = []
         y_ar = []
         for i in range(0, len(self.poly)):
@@ -327,7 +336,7 @@ if __name__ == "__main__":
     print("choose the shape you would like to generate")
     print("")
     '''
-
+    '''
     c = Circle(2.0, 2.0, 3.0)
     c.rotate(45)
     print(c.radius)
@@ -335,5 +344,6 @@ if __name__ == "__main__":
     '''
     l = [[1.0, 1.0, 1.0], [1.0, 5.0, 1.0], [5.0, 5.0, 1.0], [5.0, 1.0, 1.0]]
     p = Polygon(l)
-    print(p.rotate(90))
-    '''
+    print(p.scale(3,2))
+
+# scale of polygon and plot of polygon left
