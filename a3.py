@@ -103,19 +103,31 @@ class Polygon(Shape):
         '''
         self.old_poly = self.poly
         self.poly = []
-        Shape.scale(self, sx, sy)
-        for i in range(0, len(self.old_poly)):
-            mat = np.array(self.old_poly[i])
-            ans = np.dot(mat, self.T_s)
-            self.poly.append(ans)
+
         y_ar = []
         x_ar = []
+        for i in range(0, len(self.old_poly)):
+            y_ar.append(self.old_poly[i][1])
+            x_ar.append(self.old_poly[i][0])
+        cen_x = sum(x_ar)/len(x_ar)
+        cen_y = sum(y_ar)/len(y_ar)
+
+        x_ar = np.array(x_ar) - np.array([cen_x]*len(x_ar))
+        y_ar = np.array(y_ar) - np.array([cen_y]*len(y_ar))
+
+        Shape.scale(self, sx, sy)
+        for i in range(0, len(self.old_poly)):
+            mat = np.array([x_ar[i], y_ar[i], 1])
+            ans = np.dot(mat, self.T_s)
+            self.poly.append(list(np.array(ans) + np.array([cen_x,cen_y,0])))
+        y_ar_f = []
+        x_ar_f = []
         for i in range(0, len(self.poly)):
             self.poly[i][0] = round(self.poly[i][0], 2)
             self.poly[i][1] = round(self.poly[i][1], 2)
-            y_ar.append(self.poly[i][1])
-            x_ar.append(self.poly[i][0])
-        return x_ar, y_ar
+            y_ar_f.append(self.poly[i][1])
+            x_ar_f.append(self.poly[i][0])
+        return x_ar_f, y_ar_f
 
     def rotate(self, deg, rx = 0, ry = 0):
         '''
@@ -346,4 +358,4 @@ if __name__ == "__main__":
     p = Polygon(l)
     print(p.scale(3,2))
 
-# scale of polygon and plot of polygon left
+# plot of polygon and menu left
