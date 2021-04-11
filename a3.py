@@ -160,6 +160,7 @@ class Polygon(Shape):
             y_ar.append(self.poly[i][1])
             x_ar.append(self.poly[i][0])
 
+        self.poly = list(self.poly)
         return x_ar, y_ar
 
     def plot(self):
@@ -174,14 +175,25 @@ class Polygon(Shape):
     
         This function does not return anything
         '''
-        figure, axes = plt.subplots()
-        axes.set_aspect(1)
 
-        axes.add_artist(plt.Circle((self.x, self.y), self.radius, color='pink'))
+        x_ar_n, x_ar_o, y_ar_n, y_ar_o = [], [], [], []
+        for i in range(0, len(self.poly)):
+            x_ar_n.append(self.poly[i][0])
+            y_ar_n.append(self.poly[i][1])
 
-        axes.add_artist(plt.Circle((self.x_old, self.y_old), self.rad_old, linestyle='--', fill=False))
+            x_ar_o.append(self.old_poly[i][0])
+            y_ar_o.append(self.old_poly[i][1])
 
-        Shape.plot(self, (self.x + self.radius), (self.x + self.radius))
+        x_ar_n.append(x_ar_n[0])
+        y_ar_n.append(y_ar_n[0])
+        x_ar_o.append(x_ar_o[0])
+        y_ar_o.append(y_ar_o[0])
+
+        plt.plot(x_ar_n, y_ar_n)
+
+        plt.plot(x_ar_o, y_ar_o, linestyle='--', color = 'k')
+
+        Shape.plot(self, abs(max(x_ar_n)), abs(max(y_ar_n)))
 
 
 class Circle(Shape):
@@ -274,16 +286,16 @@ class Circle(Shape):
         axes.set_aspect(1)
 
         axes.add_artist(plt.Circle((self.x, self.y), self.radius, color='pink'))
-
         axes.add_artist(plt.Circle((self.x_old, self.y_old), self.rad_old, linestyle='--', fill=False))
 
         Shape.plot(self, (abs(self.x) + self.radius)*2, (abs(self.x) + self.radius)*2)
+
 
 if __name__ == "__main__":
     '''
     Add menu here as mentioned in the sample output section of the assignment document.
     '''
-    '''    print("welcome!")
+    print("welcome!")
     while True:
         a1 = input("enter 1 if you want to see the plot after transformation otherwise enter 0")
         if a1 != '1' and a1 != '0':
@@ -309,12 +321,76 @@ if __name__ == "__main__":
 
         if a2 == 0:
             co_ord = []
-            n = int(input("enter the number of sides of polygon"))
-            for i in range(0, n):
-                x = input("enter space separated co-ordinates x"+ str(i) + " y" + str(i)).split()
+            while True:
+                n = int(input("enter the number of sides of polygon"))
+                if n < 3:
+                    print("a polygon must have at least 3 vertices")
+                    continue
+                else:
+                    break
+
+            for j in range(0, n):
+                x = input("enter space separated co-ordinates x"+ str(j) + " y" + str(j)).split()
                 li = [round(float(x[0]),2), round(float(x[1]),2), 1]
                 co_ord.append(li)
                 pg = Polygon(co_ord)
+
+            p = int(input("enter the number of queries"))
+            print("for translation - t <distance along x> <distance along y>")
+            print("for Scaling - s <scaling factor along x> <scaling factor along y>")
+            print("for rotation - r <angle of rotation in deg> <x co-ord of rotation(optional)> <y co-ord of rotation(optional)>")
+
+            if a1 == 0:
+                print("Enter Query:  '()' represent optional arguments")
+                print("1) R deg (rx) (ry)")
+                print("2) T dx (dy)")
+                print("3) S sx (sy)")
+                print("4) P")
+
+                for j in range(0, p):
+                    q = input().split()
+                    y_ar = []
+                    x_ar = []
+                    for z in range(0, len(self.poly)):
+                        y_ar.append(self.poly[z][1])
+                        x_ar.append(self.poly[z][0])
+
+                    if q[0] == 't':
+                        print(x_ar, y_ar)
+
+                        print(pg.translate(int(q[1]), int(q[2])))
+
+
+                    elif q[0] == 's':
+                        print(x_ar, y_ar)
+                        print(pg.scale(int(q[1]), int(q[2])))
+
+                    else:
+                        print(x_ar, y_ar)
+                        if len(q) == 2:
+                            pg.rotate(float(q[1]), 0, 0)
+                        elif len(q) == 4:
+                            pg.rotate(float(q[1]), float(q[2]), float(q[3]))
+
+
+            if a1 == 1:
+                for j in range(0, p):
+                    q = input("enter the query").split()
+
+                    if q[0] == 't':
+                        pg.translate(int(q[1]), int(q[2]))
+                        pg.plot()
+
+                    elif q[0] == 's':
+                        pg.scale(int(q[1]), int(q[2]))
+                        pg.plot()
+
+                    else:
+                        if len(q) == 2:
+                            pg.rotate(float(q[1]), 0, 0)
+                        elif len(q) == 4:
+                            pg.rotate(float(q[1]), float(q[2]), float(q[3]))
+                        pg.plot()
 
         elif a2 == 1:
             x = input("enter space seprated x co-ordinate, y co-ordinate and radius of circle").split()
@@ -344,18 +420,21 @@ if __name__ == "__main__":
                     c.plot()
 
 
-
+    '''
     print("choose the shape you would like to generate")
     print("")
-    '''
-    '''
+    
+    
     c = Circle(2.0, 2.0, 3.0)
     c.rotate(45)
     print(c.radius)
     c.plot()
-    '''
+
+    
     l = [[1.0, 1.0, 1.0], [1.0, 5.0, 1.0], [5.0, 5.0, 1.0], [5.0, 1.0, 1.0]]
     p = Polygon(l)
-    print(p.scale(3,2))
+    p.scale(3, 2)
+    p.plot()
+    '''
 
 # plot of polygon and menu left
