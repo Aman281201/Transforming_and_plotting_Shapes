@@ -13,7 +13,7 @@ class Shape:
         self.T_r = None
         self.T_t = None
 
-    
+
     def translate(self, dx, dy):
         '''
         Polygon and Circle class should use this function to calculate the translation
@@ -21,15 +21,15 @@ class Shape:
 
         self.T_t = np.array([[1, 0, dx], [0, 1, dy], [0, 0, 1]])
 
- 
+
 
     def scale(self, sx, sy):
         '''
         Polygon and Circle class should use this function to calculate the scaling
         '''
         self.T_s = np.array([[sx, 0, 0], [0, sy, 0], [0, 0, 1]])
- 
-        
+
+
     def rotate(self, deg):
         '''
         Polygon and Circle class should use this function to calculate the rotation
@@ -37,7 +37,7 @@ class Shape:
         rad = deg*(np.pi/180)
         self.T_r = np.array([[np.cos(rad), np.sin(rad), 0],[-np.sin(rad), np.cos(rad),0], [0, 0, 1]])
 
-        
+
     def plot(self, x_dim, y_dim):
         '''
         Polygon and Circle class should use this function while plotting
@@ -63,14 +63,14 @@ class Polygon(Shape):
         '''
         self.poly = A
         self.old_poly = []
- 
-    
+
+
     def translate(self, dx, dy):
         '''
         Function to translate the polygon
-    
+
         This function takes 2 arguments: dx and dy
-    
+
         This function returns the final coordinates
         '''
         self.old_poly = self.poly
@@ -92,13 +92,13 @@ class Polygon(Shape):
 
 
 
-    
+
     def scale(self, sx, sy ):
         '''
         Function to scale the polygon
-    
+
         This function takes 2 arguments: sx and sx
-    
+
         This function returns the final coordinates
         '''
         self.old_poly = self.poly
@@ -132,9 +132,9 @@ class Polygon(Shape):
     def rotate(self, deg, rx = 0, ry = 0):
         '''
         Function to rotate the polygon
-    
+
         This function takes 3 arguments: deg, rx(optional), ry(optional). Default rx and ry = 0. (Rotate about origin)
-    
+
         This function returns the final coordinates
         '''
         self.old_poly = self.poly
@@ -166,13 +166,13 @@ class Polygon(Shape):
     def plot(self):
         '''
         Function to plot the polygon
-    
+
         This function should plot both the initial and the transformed polygon
-    
+
         This function should use the parent's class plot method as well
-    
+
         This function does not take any input
-    
+
         This function does not return anything
         '''
 
@@ -211,13 +211,13 @@ class Circle(Shape):
         self.y_old = 0.00
         self.rad_old = 0.00
 
-    
+
     def translate(self, dx, dy):
         '''
         Function to translate the circle
-    
+
         This function takes 2 arguments: dx and dy (dy is optional).
-    
+
         This function returns the final coordinates and the radius
         '''
         self.x_old = self.x
@@ -230,13 +230,13 @@ class Circle(Shape):
         self.y = round(ans[1],2)
         print(ans)
         return (self.x, self.y, self.radius)
-        
+
     def scale(self, sx = 1):
         '''
         Function to scale the circle
-    
+
         This function takes 1 argument: sx
-    
+
         This function returns the final coordinates and the radius
         '''
         self.x_old = self.x
@@ -249,13 +249,13 @@ class Circle(Shape):
 
         return self.x, self.y, self.radius
 
-    
+
     def rotate(self, deg, rx = 0, ry = 0):
         '''
         Function to rotate the circle
-    
+
         This function takes 3 arguments: deg, rx(optional), ry(optional). Default rx and ry = 0. (Rotate about origin)
-    
+
         This function returns the final coordinates and the radius
         '''
         self.x_old = self.x
@@ -268,17 +268,17 @@ class Circle(Shape):
         self.y = round(ans[0], 2) + ry
         print(self.x, self.y, self.radius)
         return self.x, self.y, self.radius
-    
+
     def plot(self):
         '''
         Function to plot the circle
-    
+
         This function should plot both the initial and the transformed circle
-    
+
         This function should use the parent's class plot method as well
-    
+
         This function does not take any input
-    
+
         This function does not return anything
         '''
 
@@ -295,6 +295,7 @@ if __name__ == "__main__":
     '''
     Add menu here as mentioned in the sample output section of the assignment document.
     '''
+
     print("welcome!")
     while True:
         a1 = input("enter 1 if you want to see the plot after transformation otherwise enter 0")
@@ -347,6 +348,9 @@ if __name__ == "__main__":
                 print("3) S sx (sy)")
                 print("4) P")
 
+                y_ar = []
+                x_ar = []
+
                 for j in range(0, p):
                     q = input().split()
                     y_ar = []
@@ -360,18 +364,22 @@ if __name__ == "__main__":
 
                         print(pg.translate(int(q[1]), int(q[2])))
 
-
                     elif q[0] == 's':
                         print(x_ar, y_ar)
-                        print(pg.scale(int(q[1]), int(q[2])))
+                        if len(q) == 3:
+                            print(pg.scale(int(q[1]), int(q[2])))
+                        else:
+                            print(pg.scale(int(q[1]), int(q[1])))
 
-                    else:
+                    elif q[0] == 'r':
                         print(x_ar, y_ar)
                         if len(q) == 2:
                             pg.rotate(float(q[1]), 0, 0)
                         elif len(q) == 4:
                             pg.rotate(float(q[1]), float(q[2]), float(q[3]))
 
+                    elif q[0] == 'p':
+                        pg.plot()
 
             if a1 == 1:
                 for j in range(0, p):
@@ -396,6 +404,37 @@ if __name__ == "__main__":
             x = input("enter space seprated x co-ordinate, y co-ordinate and radius of circle").split()
             c = Circle(float(x[0]), float(x[1]), float(x[2]))
 
+            if a1 == 0:
+                print("Enter Query:  '()' represent optional arguments")
+                print("1) R deg (rx) (ry)")
+                print("2) T dx (dy)")
+                print("3) S sx (sy)")
+                print("4) P")
+
+                for j in range(0, p):
+                    q = input().split()
+
+                    if q[0] == 't':
+                        print(c.x, c.y, c. radius)
+
+                        print(c.translate(int(q[1]), int(q[2])))
+
+                    elif q[0] == 's':
+                        print(c.x, c.y, c.radius)
+
+                        print(c.scale(int(q[1]), int(q[2])))
+
+                    elif q[0] == 'r':
+                        print(c.x, c.y, c.radius)
+
+                        if len(q) == 2:
+                            c.rotate(float(q[1]), 0, 0)
+                        elif len(q) == 4:
+                            c.rotate(float(q[1]), float(q[2]), float(q[3]))
+
+                    elif q[0] == 'p':
+                        c.plot()
+
             p = int(input("enter the number of queries"))
             print("for translation - t <distance along x> <distance along y>")
             print("for Scaling - s <scaling factor>")
@@ -419,18 +458,15 @@ if __name__ == "__main__":
                         c.rotate(float(q[1]), float(q[2]), float(q[3]))
                     c.plot()
 
-
-    '''
     print("choose the shape you would like to generate")
     print("")
-    
-    
+
+    '''
     c = Circle(2.0, 2.0, 3.0)
     c.rotate(45)
     print(c.radius)
     c.plot()
 
-    
     l = [[1.0, 1.0, 1.0], [1.0, 5.0, 1.0], [5.0, 5.0, 1.0], [5.0, 1.0, 1.0]]
     p = Polygon(l)
     p.scale(3, 2)
