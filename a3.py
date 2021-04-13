@@ -191,13 +191,13 @@ class Polygon(Shape):
 
         plt.plot(x_ar_n, y_ar_n)
 
-        plt.plot(x_ar_o, y_ar_o, linestyle='--', color = 'k')
+        plt.plot(x_ar_o, y_ar_o, linestyle='--', color='k')
         x_ar_n.extend(x_ar_o)
         y_ar_n.extend(y_ar_o)
         x_ar_n = list(map(abs, x_ar_n))
         y_ar_n = list(map(abs, y_ar_n))
 
-        Shape.plot(self, max(x_ar_n), max(y_ar_n))
+        Shape.plot(self, max(max(x_ar_n), max(y_ar_n)), max(max(x_ar_n), max(y_ar_n)))
 
 
 class Circle(Shape):
@@ -345,33 +345,34 @@ if __name__ == "__main__":
 
             if a1 == 0:
                 print("Enter Query:  '()' represent optional arguments")
-                print("1) R deg (rx) (ry)")
-                print("2) T dx (dy)")
-                print("3) S sx (sy)")
-                print("4) P")
+                print("1) r deg (rx) (ry)")
+                print("2) t dx (dy)")
+                print("3) s sx (sy)")
+                print("4) p")
 
                 y_ar = []
                 x_ar = []
 
                 for j in range(0, p):
+                    print("enter query")
                     q = input().split()
                     y_ar = []
                     x_ar = []
-                    for z in range(0, len(p.poly)):
-                        y_ar.append(self.poly[z][1])
-                        x_ar.append(self.poly[z][0])
+                    for z in range(0, len(pg.poly)):
+                        y_ar.append(pg.poly[z][1])
+                        x_ar.append(pg.poly[z][0])
 
                     if q[0] == 't':
                         print(x_ar, y_ar)
 
-                        print(pg.translate(int(q[1]), int(q[2])))
+                        print(pg.translate(float(q[1]), float(q[2])))
 
                     elif q[0] == 's':
                         print(x_ar, y_ar)
                         if len(q) == 3:
-                            print(pg.scale(int(q[1]), int(q[2])))
+                            print(pg.scale(float(q[1]), float(q[2])))
                         else:
-                            print(pg.scale(int(q[1]), int(q[1])))
+                            print(pg.scale(float(q[1]), float(q[1])))
 
                     elif q[0] == 'r':
                         print(x_ar, y_ar)
@@ -388,15 +389,18 @@ if __name__ == "__main__":
                     q = input("enter the query").split()
 
                     if q[0] == 't':
-                        pg.translate(int(q[1]), int(q[2]))
+                        pg.translate(float(q[1]), float(q[2]))
                         pg.plot()
 
                     elif q[0] == 's':
-                        pg.scale(int(q[1]), int(q[2]))
+                        if len(q) == 3:
+                            pg.scale(float(q[1]), float(q[2]))
+                        elif len(q) == 2:
+                            pg.scale(float(q[1]), float(q[1]))
                         pg.plot()
 
                     else:
-                        if len(q) == 2:
+                        if len(q) ==2 or len(q) == 3:
                             pg.rotate(-float(q[1]), 0, 0)
                         elif len(q) == 4:
                             pg.rotate(-float(q[1]), float(q[2]), float(q[3]))
@@ -410,12 +414,13 @@ if __name__ == "__main__":
 
             if a1 == 0:
                 print("Enter Query:  '()' represent optional arguments")
-                print("1) R deg (rx) (ry)")
-                print("2) T dx (dy)")
-                print("3) S sx (sy)")
-                print("4) P")
+                print("1) r deg (rx) (ry)")
+                print("2) t dx (dy)")
+                print("3) s sx (sy)")
+                print("4) p")
 
                 for j in range(0, p):
+                    print("enter the query")
                     q = input().split()
 
                     if q[0] == 't':
@@ -426,45 +431,43 @@ if __name__ == "__main__":
                     elif q[0] == 's':
                         print(c.x, c.y, c.radius)
 
-                        print(c.scale(int(q[1]), int(q[2])))
+                        print(c.scale(int(q[1])))
 
                     elif q[0] == 'r':
                         print(c.x, c.y, c.radius)
 
                         if len(q) == 2:
-                            c.rotate(-float(q[1]), 0, 0)
+                            print(c.rotate(-float(q[1]), 0, 0))
                         elif len(q) == 4:
-                            c.rotate(-float(q[1]), float(q[2]), float(q[3]))
+                            print(c.rotate(-float(q[1]), float(q[2]), float(q[3])))
 
                     elif q[0] == 'p':
                         c.plot()
-                        continue
 
-            p = int(input("enter the number of queries"))
-            print("for translation - t <distance along x> <distance along y>")
-            print("for Scaling - s <scaling factor>")
-            print("for rotation - r <angle of rotation in deg> <x co-ord of rotation(optional)> <y co-ord of rotation(optional)>")
+            if a1 == 1:
+                p = int(input("enter the number of queries"))
+                print("for translation - t <distance along x> <distance along y>")
+                print("for Scaling - s <scaling factor>")
+                print("for rotation - r <angle of rotation in deg> <x co-ord of rotation(optional)> <y co-ord of rotation(optional)>")
 
-            for j in range(0, p):
-                q = input("enter the query").split()
+                for j in range(0, p):
+                    q = input("enter the query").split()
 
-                if q[0] == 't':
-                    c.translate(int(q[1]), int(q[2]))
-                    c.plot()
+                    if q[0] == 't':
+                        c.translate(float(q[1]), float(q[2]))
+                        c.plot()
 
-                elif q[0] == 's':
-                    c.scale(int(q[1]))
-                    c.plot()
+                    elif q[0] == 's':
+                        c.scale(float(q[1]))
+                        c.plot()
 
-                else:
-                    if len(q) == 2:
-                        c.rotate(float(q[1]), 0, 0)
-                    elif len(q) == 4:
-                        c.rotate(float(q[1]), float(q[2]), float(q[3]))
-                    c.plot()
+                    else:
+                        if len(q) == 2:
+                            c.rotate(float(q[1]), 0, 0)
+                        elif len(q) == 4:
+                            c.rotate(float(q[1]), float(q[2]), float(q[3]))
+                        c.plot()
 
-    print("choose the shape you would like to generate")
-    print("")
 
     '''
     c = Circle(2.0, 2.0, 3.0)
@@ -477,5 +480,3 @@ if __name__ == "__main__":
     p.scale(3, 2)
     p.plot()
     '''
-
-# plot of polygon and menu left
