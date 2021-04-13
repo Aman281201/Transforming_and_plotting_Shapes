@@ -192,8 +192,12 @@ class Polygon(Shape):
         plt.plot(x_ar_n, y_ar_n)
 
         plt.plot(x_ar_o, y_ar_o, linestyle='--', color = 'k')
+        x_ar_n.extend(x_ar_o)
+        y_ar_n.extend(y_ar_o)
+        x_ar_n = list(map(abs, x_ar_n))
+        y_ar_n = list(map(abs, y_ar_n))
 
-        Shape.plot(self, abs(max(x_ar_n)), abs(max(y_ar_n)))
+        Shape.plot(self, max(x_ar_n), max(y_ar_n))
 
 
 class Circle(Shape):
@@ -228,7 +232,6 @@ class Circle(Shape):
         ans = np.dot(self.T_t, mat)
         self.x = round(ans[0],2)
         self.y = round(ans[1],2)
-        print(ans)
         return (self.x, self.y, self.radius)
 
     def scale(self, sx = 1):
@@ -266,7 +269,6 @@ class Circle(Shape):
         ans = np.dot(mat, self.T_r)
         self.x = round(ans[1], 2) + rx
         self.y = round(ans[0], 2) + ry
-        print(self.x, self.y, self.radius)
         return self.x, self.y, self.radius
 
     def plot(self):
@@ -285,8 +287,8 @@ class Circle(Shape):
         figure, axes = plt.subplots()
         axes.set_aspect(1)
 
-        axes.add_artist(plt.Circle((self.x, self.y), self.radius, color='pink'))
-        axes.add_artist(plt.Circle((self.x_old, self.y_old), self.rad_old, linestyle='--', fill=False))
+        axes.add_artist(plt.Circle((self.y, self.x), self.radius, color='pink'))
+        axes.add_artist(plt.Circle((self.y_old, self.x_old), self.rad_old, linestyle='--', fill=False))
 
         Shape.plot(self, (abs(self.x) + self.radius)*2, (abs(self.x) + self.radius)*2)
 
@@ -355,7 +357,7 @@ if __name__ == "__main__":
                     q = input().split()
                     y_ar = []
                     x_ar = []
-                    for z in range(0, len(self.poly)):
+                    for z in range(0, len(p.poly)):
                         y_ar.append(self.poly[z][1])
                         x_ar.append(self.poly[z][0])
 
@@ -395,14 +397,16 @@ if __name__ == "__main__":
 
                     else:
                         if len(q) == 2:
-                            pg.rotate(float(q[1]), 0, 0)
+                            pg.rotate(-float(q[1]), 0, 0)
                         elif len(q) == 4:
-                            pg.rotate(float(q[1]), float(q[2]), float(q[3]))
+                            pg.rotate(-float(q[1]), float(q[2]), float(q[3]))
                         pg.plot()
 
         elif a2 == 1:
             x = input("enter space seprated x co-ordinate, y co-ordinate and radius of circle").split()
             c = Circle(float(x[0]), float(x[1]), float(x[2]))
+
+            p = int(input("enter the number of queries"))
 
             if a1 == 0:
                 print("Enter Query:  '()' represent optional arguments")
@@ -428,12 +432,13 @@ if __name__ == "__main__":
                         print(c.x, c.y, c.radius)
 
                         if len(q) == 2:
-                            c.rotate(float(q[1]), 0, 0)
+                            c.rotate(-float(q[1]), 0, 0)
                         elif len(q) == 4:
-                            c.rotate(float(q[1]), float(q[2]), float(q[3]))
+                            c.rotate(-float(q[1]), float(q[2]), float(q[3]))
 
                     elif q[0] == 'p':
                         c.plot()
+                        continue
 
             p = int(input("enter the number of queries"))
             print("for translation - t <distance along x> <distance along y>")
